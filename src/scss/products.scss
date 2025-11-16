@@ -1,0 +1,86 @@
+.hits {
+  margin-bottom: 50px;
+
+  h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: $text-dark;
+  }
+
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+}
+
+.product-card {
+  background-color: #fff;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-image {
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background-color: #f0f0f0;
+    }
+
+    .product-label {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  }
+
+  .product-discount {
+    background-color: $discount-red;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .product-price {
+    padding: 0 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: $text-dark;
+    margin: 10px 0;
+  }
+
+  .product-quantity {
+    padding: 0 15px;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 15px;
+  }
+
+  .add-to-cart {
+    @include button-base;
+    width: 100%;
+    background-color: $primary-pink;
+    color: #fff;
+
+    &:hover {
+      background-color: color.adjust($primary-pink, $lightness: -10%);
+    }
+  }
+}

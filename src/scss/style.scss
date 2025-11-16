@@ -1,0 +1,38 @@
+@use 'sass:color';
+@import '/src/scss/variables.scss';
+@import'/src/scss/mixins.scss';
+@import '/src/scss/header.scss';
+@import '/src/scss/slider.scss';
+@import '/src/scss/products.scss';
+@import '/src/scss/footer.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+}
+
+a {
+  list-style-type: none;
+}
+
+.container {
+  max-width: 1170px;
+  margin: 0 auto;
+  padding: 0 15px;
+
+  @media screen and (max-width: 1024px) {
+    max-width: 1024px;
+  }
+
+  @media screen and (max-width: 580px) {
+    max-width: 580px;
+  }
+}

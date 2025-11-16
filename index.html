@@ -1,13 +1,99 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="img/png" href="./public/favicon.svg"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wildberries</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wildberries</title>
+</head>
+
+<body>
+  <!-- <div id="app"></div> -->
+  <header class="header">
+    <div class="container">
+      <div class="header__wrapper">
+        <a href="#" class="header__logo">
+          <img class="header__logo-img" src="/public/favicon.svg" alt="wildberries-logo">
+        </a>
+        <input type="search" class="header__search" placeholder="Поиск...">
+        <div class="header__cart">
+          <button class="сart">Корзина</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="main">
+    <div class="container">
+      <section class="slider">
+        <!-- Swiper structure -->
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="./src/assets/item-1.jpg" alt="Slide 1">
+            </div>
+            <div class="swiper-slide">
+              <img src="./src/assets/item-1.jpg" alt="Slide 2">
+            </div>
+            <div class="swiper-slide">
+              <img src="./src/assets/item-1.jpg" alt="Slide 3">
+            </div>
+
+          </div>
+          <!-- Slider pagination -->
+          <div class="swiper-pagination"></div>
+          <!-- Slider buttons -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </section>
+      <section class="hits">
+        <h2>Хиты продаж</h2>
+        <div class="products">
+          <!-- Product card -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="./src/assets/item-1.jpg" alt="Товар" />
+              <span class="product-label">Быстрый просмотр</span>
+            </div>
+            <div class="product-discount">-10%</div>
+            <div class="product-price">900 ₽</div>
+            <div class="product-quantity">Шт/штук</div>
+            <button class="add-to-cart">В корзину</button>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="./src/assets/item-1.jpg" alt="Товар" />
+              <span class="product-label">Быстрый просмотр</span>
+            </div>
+            <div class="product-discount">-10%</div>
+            <div class="product-price">900 ₽</div>
+            <div class="product-quantity">Шт/штук</div>
+            <button class="add-to-cart">В корзину</button>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="./src/assets/item-1.jpg" alt="Товар" />
+              <span class="product-label">Быстрый просмотр</span>
+            </div>
+            <div class="product-discount">-10%</div>
+            <div class="product-price">900 ₽</div>
+            <div class="product-quantity">Шт/штук</div>
+            <button class="add-to-cart">В корзину</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__text">
+        <p class="footer__copyright">Copyright © 2025 Wildberries. All Rights
+          Reserved Made with <span class="footer__author"> by Veranika Kanaval</span></p>
+      </div>
+    </div>
+  </footer>
+  <script type="module" src="./src/js/main.js"></script>
+</body>
+
 </html>
