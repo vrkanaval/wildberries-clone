@@ -58,7 +58,7 @@
             </div>
             <div class="product-discount">-10%</div>
             <div class="product-price">900 ₽</div>
-            <div class="product-quantity">Шт/штук</div>
+            <div class="product-name">Штаны</div>
             <button class="add-to-cart">В корзину</button>
           </div>
           <div class="product-card">
@@ -68,7 +68,7 @@
             </div>
             <div class="product-discount">-10%</div>
             <div class="product-price">900 ₽</div>
-            <div class="product-quantity">Шт/штук</div>
+            <div class="product-name">Штаны</div>
             <button class="add-to-cart">В корзину</button>
           </div>
           <div class="product-card">
@@ -78,11 +78,58 @@
             </div>
             <div class="product-discount">-10%</div>
             <div class="product-price">900 ₽</div>
-            <div class="product-quantity">Шт/штук</div>
+            <div class="product-name">Штаны</div>
+            <button class="add-to-cart">В корзину</button>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="./src/assets/item-1.jpg" alt="Товар" />
+              <span class="product-label">Быстрый просмотр</span>
+            </div>
+            <div class="product-discount">-10%</div>
+            <div class="product-price">900 ₽</div>
+            <div class="product-name">Штаны</div>
+            <button class="add-to-cart">В корзину</button>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="./src/assets/item-1.jpg" alt="Товар" />
+              <span class="product-label">Быстрый просмотр</span>
+            </div>
+            <div class="product-discount">-10%</div>
+            <div class="product-price">900 ₽</div>
+            <div class="product-name">Штаны</div>
             <button class="add-to-cart">В корзину</button>
           </div>
         </div>
       </section>
+
+      <!-- Cart modal window  -->
+      <div class="cart-modal" id="cart-modal">
+        <div class="cart-modal__overlay"></div>
+        <div class="cart-modal__content">
+          <div class="cart-modal__header">
+            <h3 class="cart-modal__title">Корзина</h3>
+            <div class="cart-modal__close">
+              <button class="cart-modal__close-btn">&times;</button>
+            </div>
+          </div>
+          <div class="cart-modal__body">
+            <ul class="cart-modal__list" id="cart-list">
+
+              <li class="cart-modal__empty">Корзина пуста</li>
+            </ul>
+          </div>
+          <div class="cart-modal__footer">
+            <div class="cart-modal__total">Итого: <span id="cart-total">0</span> ₽</div>
+            <div class="cart-modal__btns">
+              <button class="cart-modal__clear">Очистить корзину</button>
+              <button class="cart-modal__checkout">Оформить заказ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
   <footer class="footer">

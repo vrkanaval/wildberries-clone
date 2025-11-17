@@ -1,0 +1,149 @@
+.cart-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+
+    &.open {
+        display: block;
+    }
+
+    &__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    &__content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: $white;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid $border-color;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    &__close {
+        width: 20px;
+        height: 20px;
+    }
+
+    &__close-btn {
+        width: 100%;
+        height: 100%;
+    }
+
+    &__body {
+        padding: 20px;
+    }
+
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__empty {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+    }
+
+    &__item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid $border-color;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__item-name {
+        flex: 1;
+    }
+
+    &__item-price {
+        margin-left: 20px;
+        font-weight: 600;
+    }
+
+    &__item-remove {
+        background: none;
+        color: #f44;
+        font-size: 20px;
+        margin-left: 10px;
+    }
+
+    &__footer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        
+        padding: 15px 20px;
+        border-top: 1px solid $border-color;
+    }
+
+    &__total {
+        align-self: flex-end;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 15px;
+    }
+
+    &__btns {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__clear,
+    &__checkout {
+        @include button-base;
+        padding: 10px 15px;
+    }
+
+    &__clear {
+        background: #ddd;
+        color: #333;
+
+        &:hover {
+            background: #ccc;
+        }
+    }
+
+    &__checkout {
+        background: $primary-pink;
+        color: $white;
+
+        &:hover {
+            background: color.adjust($primary-pink, $lightness: -10%);
+        }
+    }
+}
