@@ -36,7 +36,7 @@
     }
 
     &__cart {
-        .сart {
+        .cart {
             @include button-base;
             background-color: $primary-pink;
             color: $white;

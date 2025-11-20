@@ -4,6 +4,13 @@ import { initSlider } from './slider.js';
 
 const root = document.getElementById('root');
 
+const PRODUCTS_DATA = [
+  { name: 'Штаны', price: '900 ₽', discount: '-10%', img: './src/assets/item-1.jpg' },
+  { name: 'Куртка', price: '1500 ₽', discount: '-15%', img: './src/assets/item-1.jpg' },
+  { name: 'Футболка', price: '500 ₽', discount: '-5%', img: './src/assets/item-1.jpg' },
+  { name: 'Платье', price: '1200 ₽', discount: '-20%', img: './src/assets/item-1.jpg' },
+  { name: 'Кроссовки', price: '2000 ₽', discount: '-12%', img: './src/assets/item-1.jpg' }
+];
 
 // Create element function
 function createElement(tag, props = {}, children = []) {
@@ -41,7 +48,7 @@ const HEADER = createElement('header', { class: 'header' }, [
         placeholder: 'Поиск...'
       }),
       createElement('div', { class: 'header__cart' }, [
-        createElement('button', { class: 'сart', textContent: 'Корзина' })
+        createElement('button', { class: 'cart', textContent: 'Корзина' })
       ])
     ])
   ])
@@ -67,28 +74,43 @@ const SLIDER = createElement('section', { class: 'slider' }, [
 ]);
 
 // PRODUCT CARD
-function createProductCard() {
+  function createProductCard(product) {
   return createElement('div', { class: 'product-card' }, [
     createElement('div', { class: 'product-image' }, [
-      createElement('img', {
-        src: './src/assets/item-1.jpg',
-        alt: 'Товар'
-      }),
+      createElement('img', { src: product.img, alt: product.name }),
       createElement('span', { class: 'product-label', textContent: 'Быстрый просмотр' })
     ]),
-    createElement('div', { class: 'product-discount', textContent: '-10%' }),
-    createElement('div', { class: 'product-price', textContent: '900 ₽' }),
-    createElement('div', { class: 'product-name', textContent: 'Штаны' }),
+    createElement('div', { class: 'product-discount', textContent: product.discount }),
+    createElement('div', { class: 'product-price', textContent: product.price }),
+    createElement('div', { class: 'product-name', textContent: product.name }),
     createElement('button', { class: 'add-to-cart', textContent: 'В корзину' })
   ]);
 }
 
+// RENDER PRODUCT ITEMS 
+function renderProducts(products, productsContainer) {
+  productsContainer.innerHTML = '';
+  products.forEach(product => {
+    productsContainer.appendChild(createProductCard(product));
+  });
+}
+
+
+// ZOOM RPODUCT IMAGE MODAL 
+const IMAGE_MODAL = createElement('div', { class: 'image-modal', style: 'display:none;' }, [
+  createElement('div', { class: 'image-modal__overlay' }),
+  createElement('div', { class: 'image-modal__content' }, [
+    createElement('button', { class: 'image-modal__close', html: '&times;' }),
+    createElement('img', { class: 'image-modal__img', src: '', alt: 'Увеличенное изображение' })
+  ])
+]);
+document.body.appendChild(IMAGE_MODAL);
+
+
 // HITS SECTION
 const HITS_SECTION = createElement('section', { class: 'hits' }, [
   createElement('h2', { textContent: 'Хиты продаж' }),
-  createElement('div', { class: 'products' }, [
-    ...Array.from({ length: 5 }, createProductCard)
-  ])
+  createElement('div', { class: 'products' })
 ]);
 
 // CART MODAL
@@ -142,10 +164,92 @@ root.appendChild(HEADER);
 root.appendChild(MAIN);
 root.appendChild(FOOTER);
 
+// RENDER PRODUCTS WHEN LOADING
+const productsContainer = document.querySelector('.products');
+renderProducts(PRODUCTS_DATA, productsContainer);
 
 
+// -----------
+
+// SEARCH FUNCTION 
+const searchInput = document.querySelector('.header__search');
+searchInput.addEventListener('input', function () {
+  const query = this.value.trim().toLowerCase();
+  const filtered = PRODUCTS_DATA.filter(product =>
+    product.name.toLowerCase().includes(query)
+  );
+  renderProducts(filtered, productsContainer);
+});
+
+// -----------
+
+// OPEN PRODUCT IMAGE
+function openProductImageModal(imgSrc, altText = '') {
+  IMAGE_MODAL.style.display = 'flex';
+  const modalImg = IMAGE_MODAL.querySelector('.image-modal__img');
+  modalImg.src = imgSrc;
+  modalImg.alt = altText;
+}
+
+// CLOSE PRODUCT MODAL
+function closeProductImageModal() {
+  IMAGE_MODAL.style.display = 'none';
+  IMAGE_MODAL.querySelector('.image-modal__img').src = '';
+}
+
+// LISTENER FOR CLOSING BUTTON
+IMAGE_MODAL.querySelector('.image-modal__close').addEventListener('click', closeProductImageModal);
+// LISTENER FOR CLOSING BY CLIKING ON THE OVERLAY
+IMAGE_MODAL.querySelector('.image-modal__overlay').addEventListener('click', closeProductImageModal);
 
 
+// QUICK VIEW
+function addQuickViewHandlers() {
+  document.querySelectorAll('.product-label').forEach(label => {
+    label.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const img = this.closest('.product-image').querySelector('img');
+      openProductImageModal(img.src, img.alt);
+    });
+  });
+}
+
+// AFTER renderProducts:
+renderProducts(PRODUCTS_DATA, productsContainer);
+addQuickViewHandlers();
+
+// AFTER SEARCH:
+searchInput.addEventListener('input', function () {
+  const query = this.value.trim().toLowerCase();
+  const filtered = PRODUCTS_DATA.filter(product =>
+    product.name.toLowerCase().includes(query)
+  );
+  renderProducts(filtered, productsContainer);
+  addQuickViewHandlers();
+});
+
+// -----------
+
+// OPEN CART MODAL
+const cartButton = document.querySelector('.cart'); 
+const cartModal = document.getElementById('cart-modal');
+
+cartButton.addEventListener('click', () => {
+  cartModal.classList.add('open');
+});
+
+// CLOSE CART MODAL
+const cartCloseBtn = cartModal.querySelector('.cart-modal__close-btn');
+const cartOverlay = cartModal.querySelector('.cart-modal__overlay');
+
+function closeCartModal() {
+  cartModal.classList.remove('open');
+}
+
+cartCloseBtn.addEventListener('click', closeCartModal);
+cartOverlay.addEventListener('click', closeCartModal);
+
+// -----------
 
 document.addEventListener('DOMContentLoaded', () => {
   initSlider();  
