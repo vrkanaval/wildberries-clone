@@ -21,3 +21,4 @@ export function initSlider() {
 
     return slider;
 }
+

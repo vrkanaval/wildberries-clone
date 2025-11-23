@@ -1,16 +1,19 @@
 import '../scss/style.scss';
-import { initSlider } from './slider.js';
+import { initSlider} from './slider.js';
 
 
 const root = document.getElementById('root');
 
-const PRODUCTS_DATA = [
-  { name: 'Штаны', price: '150 р.', discount: '-10%', img: './src/assets/item-1.jpg' }, 
-  { name: 'Куртка', price: '220 р.', discount: '-15%', img: './src/assets/item-1.jpg' },
-  { name: 'Футболка', price: '87 р.', discount: '-5%', img: './src/assets/item-1.jpg' },
-  { name: 'Платье', price: '143 р.', discount: '-20%', img: './src/assets/item-1.jpg' },
-  { name: 'Кроссовки', price: '189 р.', discount: '-12%', img: './src/assets/item-1.jpg' }
-];
+const API_URL = 'https://692335b009df4a492324af4f.mockapi.io/api/v1/products';
+
+
+// const PRODUCTS_DATA = [
+//   { name: 'Штаны', price: '150 р.', discount: '-10%', img: './src/assets/item-1.jpg' }, 
+//   { name: 'Куртка', price: '220 р.', discount: '-15%', img: './src/assets/item-1.jpg' },
+//   { name: 'Футболка', price: '87 р.', discount: '-5%', img: './src/assets/item-1.jpg' },
+//   { name: 'Платье', price: '143 р.', discount: '-20%', img: './src/assets/item-1.jpg' },
+//   { name: 'Кроссовки', price: '189 р.', discount: '-12%', img: './src/assets/item-1.jpg' }
+// ];
 
 // --------
 // Local storage 
@@ -22,8 +25,28 @@ function loadCartFromLocalStorage() {
   const data = localStorage.getItem('cart');
   return data ? JSON.parse(data) : [];
 }
-
 // -------
+// API
+
+async function fetchProducts() {
+  const response = await fetch(API_URL);
+  if (!response.ok) {
+    showNotification('Ошибка загрузки товаров!');
+    return [];
+  }
+  return await response.json();
+}
+
+let loadedProducts = [];
+
+async function initProducts() {
+  loadedProducts = await fetchProducts();
+  renderProducts(loadedProducts, productsContainer);
+  addQuickViewHandlers();
+  addCartHandlers();
+}
+
+// --------
 // Create element function
 function createElement(tag, props = {}, children = []) {
   const el = document.createElement(tag);
@@ -67,14 +90,20 @@ const HEADER = createElement('header', { class: 'header' }, [
 ]);
 
 // SLIDER
+const SLIDER_IMAGES = [
+  './src/assets/slider/slide1.webp',
+  './src/assets/slider/slide2.webp',
+  './src/assets/slider/slide3.webp'
+];
+
 const SLIDER = createElement('section', { class: 'slider' }, [
   createElement('div', { class: 'swiper-container' }, [
     createElement('div', { class: 'swiper-wrapper' }, [
-      ...[1, 2, 3].map(i =>
+      ...SLIDER_IMAGES.map((src, i) =>
         createElement('div', { class: 'swiper-slide' }, [
           createElement('img', {
-            src: './src/assets/item-1.jpg',
-            alt: `Slide ${i}`
+            src,
+            alt: `Slide ${i + 1}`
           })
         ])
       )
@@ -178,7 +207,7 @@ root.appendChild(FOOTER);
 
 // RENDER PRODUCTS WHEN LOADING
 const productsContainer = document.querySelector('.products');
-renderProducts(PRODUCTS_DATA, productsContainer);
+renderProducts(loadedProducts, productsContainer);
 
 
 // -----------
@@ -187,10 +216,12 @@ renderProducts(PRODUCTS_DATA, productsContainer);
 const searchInput = document.querySelector('.header__search');
 searchInput.addEventListener('input', function () {
   const query = this.value.trim().toLowerCase();
-  const filtered = PRODUCTS_DATA.filter(product =>
+  const filtered = loadedProducts.filter(product =>
     product.name.toLowerCase().includes(query)
   );
   renderProducts(filtered, productsContainer);
+  addQuickViewHandlers();
+  addCartHandlers();
 });
 
 // -----------
@@ -313,16 +344,14 @@ function addCartHandlers() {
   document.querySelectorAll('.add-to-cart').forEach((btn, idx) => {
     btn.addEventListener('click', () => {
       const name = btn.closest('.product-card').querySelector('.product-name').textContent;
-      const product = PRODUCTS_DATA.find(p => p.name === name);
+      const product = loadedProducts.find(p => p.name === name);
       if (product) addToCart(product);
     });
   });
 }
 
-
-
 // AFTER renderProducts:
-renderProducts(PRODUCTS_DATA, productsContainer);
+renderProducts(loadedProducts, productsContainer);
 addQuickViewHandlers();
 addCartHandlers();
 
@@ -374,5 +403,5 @@ function showNotification(message) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initSlider();  
- 
+  initProducts();
 });
