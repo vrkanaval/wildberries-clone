@@ -161,3 +161,26 @@
         }
     }
 }
+
+
+.notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #e20d87;
+  color: $white;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(161,0,255,0.15);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 99999;
+  transition: opacity 0.3s, transform 0.3s;
+
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -5,13 +5,25 @@ import { initSlider } from './slider.js';
 const root = document.getElementById('root');
 
 const PRODUCTS_DATA = [
-  { name: 'Штаны', price: '900 ₽', discount: '-10%', img: './src/assets/item-1.jpg' },
-  { name: 'Куртка', price: '1500 ₽', discount: '-15%', img: './src/assets/item-1.jpg' },
-  { name: 'Футболка', price: '500 ₽', discount: '-5%', img: './src/assets/item-1.jpg' },
-  { name: 'Платье', price: '1200 ₽', discount: '-20%', img: './src/assets/item-1.jpg' },
-  { name: 'Кроссовки', price: '2000 ₽', discount: '-12%', img: './src/assets/item-1.jpg' }
+  { name: 'Штаны', price: '150 р.', discount: '-10%', img: './src/assets/item-1.jpg' }, 
+  { name: 'Куртка', price: '220 р.', discount: '-15%', img: './src/assets/item-1.jpg' },
+  { name: 'Футболка', price: '87 р.', discount: '-5%', img: './src/assets/item-1.jpg' },
+  { name: 'Платье', price: '143 р.', discount: '-20%', img: './src/assets/item-1.jpg' },
+  { name: 'Кроссовки', price: '189 р.', discount: '-12%', img: './src/assets/item-1.jpg' }
 ];
 
+// --------
+// Local storage 
+function saveCartToLocalStorage() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadCartFromLocalStorage() {
+  const data = localStorage.getItem('cart');
+  return data ? JSON.parse(data) : [];
+}
+
+// -------
 // Create element function
 function createElement(tag, props = {}, children = []) {
   const el = document.createElement(tag);
@@ -129,7 +141,7 @@ const CART_MODAL = createElement('div', { class: 'cart-modal', id: 'cart-modal' 
       ])
     ]),
     createElement('div', { class: 'cart-modal__footer' }, [
-      createElement('div', { class: 'cart-modal__total', html: 'Итого: <span id="cart-total">0</span> ₽' }),
+      createElement('div', { class: 'cart-modal__total', html: 'Итого: <span id="cart-total">0</span> р.' }),
       createElement('div', { class: 'cart-modal__btns' }, [
         createElement('button', { class: 'cart-modal__clear', textContent: 'Очистить корзину' }),
         createElement('button', { class: 'cart-modal__checkout', textContent: 'Оформить заказ' })
@@ -214,20 +226,6 @@ function addQuickViewHandlers() {
   });
 }
 
-// AFTER renderProducts:
-renderProducts(PRODUCTS_DATA, productsContainer);
-addQuickViewHandlers();
-
-// AFTER SEARCH:
-searchInput.addEventListener('input', function () {
-  const query = this.value.trim().toLowerCase();
-  const filtered = PRODUCTS_DATA.filter(product =>
-    product.name.toLowerCase().includes(query)
-  );
-  renderProducts(filtered, productsContainer);
-  addQuickViewHandlers();
-});
-
 // -----------
 
 // OPEN CART MODAL
@@ -250,6 +248,129 @@ cartCloseBtn.addEventListener('click', closeCartModal);
 cartOverlay.addEventListener('click', closeCartModal);
 
 // -----------
+
+// 
+
+let cart = loadCartFromLocalStorage();
+renderCart();
+
+function renderCart() {
+  const cartList = document.getElementById('cart-list');
+  const cartTotal = document.getElementById('cart-total');
+  cartList.innerHTML = '';
+
+  if (cart.length === 0) {
+    cartList.appendChild(createElement('li', { class: 'cart-modal__empty', textContent: 'Корзина пуста' }));
+    cartTotal.textContent = '0';
+    return;
+  }
+
+  let total = 0;
+  cart.forEach(item => {
+    const priceNumber = parseInt(item.price.replace(/\D/g, ''), 10);
+    total += priceNumber * item.count;
+
+    const li = createElement('li', { class: 'cart-modal__item' }, [
+      createElement('span', { class: 'cart-modal__item-name', textContent: item.name }),
+      createElement('span', { class: 'cart-modal__item-price', textContent: item.price + (item.count > 1 ? ` x${item.count}` : '') }),
+      createElement('button', {
+        class: 'cart-modal__item-remove',
+        html: '&times;',
+        onclick: () => {
+          removeFromCart(item.name);
+        }
+      })
+    ]);
+    cartList.appendChild(li);
+  });
+
+  cartTotal.textContent = total;
+}
+
+
+// Add item to the cart
+function addToCart(product) {
+  const existing = cart.find(item => item.name === product.name);
+  if (existing) {
+    existing.count += 1;
+  } else {
+    cart.push({ ...product, count: 1 });
+  }
+  renderCart();
+  saveCartToLocalStorage();
+  showNotification(`Товар "${product.name}" добавлен в корзину!`);
+}
+
+// Remove item from the cart
+function removeFromCart(name) {
+  cart = cart.filter(item => item.name !== name);
+  renderCart();
+  saveCartToLocalStorage();
+}
+
+// 
+function addCartHandlers() {
+  document.querySelectorAll('.add-to-cart').forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      const name = btn.closest('.product-card').querySelector('.product-name').textContent;
+      const product = PRODUCTS_DATA.find(p => p.name === name);
+      if (product) addToCart(product);
+    });
+  });
+}
+
+
+
+// AFTER renderProducts:
+renderProducts(PRODUCTS_DATA, productsContainer);
+addQuickViewHandlers();
+addCartHandlers();
+
+// AFTER SEARCH:
+searchInput.addEventListener('input', function () {
+  const query = this.value.trim().toLowerCase();
+  const filtered = PRODUCTS_DATA.filter(product =>
+    product.name.toLowerCase().includes(query)
+  );
+  renderProducts(filtered, productsContainer);
+  addQuickViewHandlers();
+  addCartHandlers();
+});
+
+
+const cartClearBtn = cartModal.querySelector('.cart-modal__clear');
+cartClearBtn.addEventListener('click', () => {
+  cart = [];
+  renderCart();
+  saveCartToLocalStorage();
+});
+
+// ----------
+
+// Show notification
+
+function showNotification(message) {
+  const oldNotification = document.querySelector('.notification');
+  if (oldNotification) oldNotification.remove();
+
+  const notification = createElement('div', { class: 'notification', textContent: message });
+  document.body.appendChild(notification);
+
+  setTimeout(() => notification.classList.add('show'), 10);
+
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  }, 2000);
+}
+
+
+
+
+
+
+
+// ----------
 
 document.addEventListener('DOMContentLoaded', () => {
   initSlider();  
