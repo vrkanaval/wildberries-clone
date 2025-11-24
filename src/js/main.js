@@ -10,13 +10,16 @@ import { initSearch } from './search.js';
 
 const root = document.getElementById('root');
 
-// -------
+// STATE
 let loadedProducts = [];
+let cart = loadCartFromLocalStorage();
 
+// UTILS
 function getLoadedProducts() {
   return loadedProducts;
 }
 
+// INIT PRODUCTS
 async function initProducts() {
   showLoader(productsContainer);
 
@@ -27,7 +30,7 @@ async function initProducts() {
   addQuickViewHandlers();
   addCartHandlers();
 }
-// --------
+
 // HEADER
 const HEADER = createElement('header', { class: 'header' }, [
   createElement('div', { class: 'container' }, [
@@ -149,8 +152,7 @@ root.appendChild(FOOTER);
 const productsContainer = document.querySelector('.products');
 const searchInput = document.querySelector('.header__search');
 
-// -----------
-
+// PRODUCT IMAGE 
 // OPEN PRODUCT IMAGE
 function openProductImageModal(imgSrc, altText = '') {
   IMAGE_MODAL.style.display = 'flex';
@@ -165,11 +167,8 @@ function closeProductImageModal() {
   IMAGE_MODAL.querySelector('.image-modal__img').src = '';
 }
 
-// LISTENER FOR CLOSING BUTTON
 IMAGE_MODAL.querySelector('.image-modal__close').addEventListener('click', closeProductImageModal);
-// LISTENER FOR CLOSING BY CLIKING ON THE OVERLAY
 IMAGE_MODAL.querySelector('.image-modal__overlay').addEventListener('click', closeProductImageModal);
-
 
 // QUICK VIEW
 function addQuickViewHandlers() {
@@ -182,8 +181,7 @@ function addQuickViewHandlers() {
   });
 }
 
-// -----------
-
+// CART
 // OPEN CART MODAL
 const cartButton = document.querySelector('.cart');
 const cartModal = document.getElementById('cart-modal');
@@ -203,13 +201,7 @@ function closeCartModal() {
 cartCloseBtn.addEventListener('click', closeCartModal);
 cartOverlay.addEventListener('click', closeCartModal);
 
-// -----------
-
-// 
-
-let cart = loadCartFromLocalStorage();
-renderCart(cart, handleRemoveFromCart);
-
+// CART LOGIC
 function handleAddToCart(product) {
   addToCart(cart, product, renderCart, saveCartToLocalStorage, showNotification, handleRemoveFromCart);
 }
@@ -235,12 +227,13 @@ cartClearBtn.addEventListener('click', () => {
   saveCartToLocalStorage();
 });
 
-// AFTER renderProducts:
+// INITIALIZATION
+renderCart(cart, handleRemoveFromCart);
 renderProducts(loadedProducts, productsContainer);
 addQuickViewHandlers();
 addCartHandlers();
 
-// init Search
+// SEARCH
 initSearch(
   searchInput,
   getLoadedProducts,
@@ -249,8 +242,8 @@ initSearch(
   addQuickViewHandlers,
   addCartHandlers
 );
-// ----------
 
+// LOAD APP
 document.addEventListener('DOMContentLoaded', () => {
   initSlider();
   initProducts();
