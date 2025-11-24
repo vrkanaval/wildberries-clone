@@ -1,72 +1,33 @@
 import '../scss/style.scss';
-import { initSlider} from './slider.js';
-
+import { initSlider } from './slider.js';
+import { fetchProducts } from './api.js';
+import { createElement } from './createElement.js';
+import { saveCartToLocalStorage, loadCartFromLocalStorage, renderCart, addToCart,removeFromCart} from './cart.js';
+import { showLoader } from './loader.js';
+import { showNotification } from './notification.js';
+import { createProductCard, renderProducts } from './products.js';
+import { initSearch } from './search.js';
 
 const root = document.getElementById('root');
-const API_URL = 'https://692335b009df4a492324af4f.mockapi.io/api/v1/products';
 
-// --------
-// Local storage 
-function saveCartToLocalStorage() {
-  localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-function loadCartFromLocalStorage() {
-  const data = localStorage.getItem('cart');
-  return data ? JSON.parse(data) : [];
-}
 // -------
-// API
-
-async function fetchProducts() {
-  const response = await fetch(API_URL);
-  if (!response.ok) {
-    showNotification('Ошибка загрузки товаров!');
-    return [];
-  }
-  return await response.json();
-}
-
 let loadedProducts = [];
 
+function getLoadedProducts() {
+  return loadedProducts;
+}
+
 async function initProducts() {
-   showLoader(productsContainer);
-   
+  showLoader(productsContainer);
+
   loadedProducts = await fetchProducts();
-  if (!loadedProducts.length) return; 
+  if (!loadedProducts.length) return;
 
   renderProducts(loadedProducts, productsContainer);
   addQuickViewHandlers();
   addCartHandlers();
 }
-
-// Loader
-function showLoader(container) {
-  container.innerHTML = '';
-  const loader = createElement('div', { class: 'loader', textContent: 'Загрузка...' });
-  container.appendChild(loader);
-}
-
 // --------
-// Create element function
-function createElement(tag, props = {}, children = []) {
-  const el = document.createElement(tag);
-
-  Object.entries(props).forEach(([key, value]) => {
-    if (key === 'class') el.className = value;
-    else if (key === 'textContent') el.textContent = value;
-    else if (key === 'html') el.innerHTML = value;
-    else el[key] = value;
-  });
-
-  if (!Array.isArray(children)) children = [children];
-  children.forEach(child => {
-    if (child) el.appendChild(child);
-  });
-
-  return el;
-}
-
 // HEADER
 const HEADER = createElement('header', { class: 'header' }, [
   createElement('div', { class: 'container' }, [
@@ -114,29 +75,6 @@ const SLIDER = createElement('section', { class: 'slider' }, [
     createElement('div', { class: 'swiper-button-next' })
   ])
 ]);
-
-// PRODUCT CARD
-  function createProductCard(product) {
-  return createElement('div', { class: 'product-card' }, [
-    createElement('div', { class: 'product-image' }, [
-      createElement('img', { src: product.img, alt: product.name }),
-      createElement('span', { class: 'product-label', textContent: 'Быстрый просмотр' })
-    ]),
-    createElement('div', { class: 'product-discount', textContent: product.discount }),
-    createElement('div', { class: 'product-price', textContent: product.price }),
-    createElement('div', { class: 'product-name', textContent: product.name }),
-    createElement('button', { class: 'add-to-cart', textContent: 'В корзину' })
-  ]);
-}
-
-// RENDER PRODUCT ITEMS 
-function renderProducts(products, productsContainer) {
-  productsContainer.innerHTML = '';
-  products.forEach(product => {
-    productsContainer.appendChild(createProductCard(product));
-  });
-}
-
 
 // ZOOM RPODUCT IMAGE MODAL 
 const IMAGE_MODAL = createElement('div', { class: 'image-modal', style: 'display:none;' }, [
@@ -193,7 +131,8 @@ const MAIN = createElement('main', { class: 'main' }, [
 const FOOTER = createElement('footer', { class: 'footer' }, [
   createElement('div', { class: 'container' }, [
     createElement('div', { class: 'footer__text' }, [
-      createElement('p', { class: 'footer__copyright', html: `
+      createElement('p', {
+        class: 'footer__copyright', html: `
         Copyright © 2025 Wildberries. All Rights Reserved Made with 
         <span class="footer__author"> by Veranika Kanaval</span>
       ` })
@@ -206,24 +145,9 @@ root.appendChild(HEADER);
 root.appendChild(MAIN);
 root.appendChild(FOOTER);
 
-// RENDER PRODUCTS WHEN LOADING
+
 const productsContainer = document.querySelector('.products');
-renderProducts(loadedProducts, productsContainer);
-
-
-// -----------
-
-// SEARCH FUNCTION 
 const searchInput = document.querySelector('.header__search');
-searchInput.addEventListener('input', function () {
-  const query = this.value.trim().toLowerCase();
-  const filtered = loadedProducts.filter(product =>
-    product.name.toLowerCase().includes(query)
-  );
-  renderProducts(filtered, productsContainer);
-  addQuickViewHandlers();
-  addCartHandlers();
-});
 
 // -----------
 
@@ -261,7 +185,7 @@ function addQuickViewHandlers() {
 // -----------
 
 // OPEN CART MODAL
-const cartButton = document.querySelector('.cart'); 
+const cartButton = document.querySelector('.cart');
 const cartModal = document.getElementById('cart-modal');
 
 cartButton.addEventListener('click', () => {
@@ -284,119 +208,50 @@ cartOverlay.addEventListener('click', closeCartModal);
 // 
 
 let cart = loadCartFromLocalStorage();
-renderCart();
+renderCart(cart, handleRemoveFromCart);
 
-function renderCart() {
-  const cartList = document.getElementById('cart-list');
-  const cartTotal = document.getElementById('cart-total');
-  cartList.innerHTML = '';
-
-  if (cart.length === 0) {
-    cartList.appendChild(createElement('li', { class: 'cart-modal__empty', textContent: 'Корзина пуста' }));
-    cartTotal.textContent = '0';
-    return;
-  }
-
-  let total = 0;
-  cart.forEach(item => {
-    const priceNumber = parseInt(item.price.replace(/\D/g, ''), 10);
-    total += priceNumber * item.count;
-
-    const li = createElement('li', { class: 'cart-modal__item' }, [
-      createElement('span', { class: 'cart-modal__item-name', textContent: item.name }),
-      createElement('span', { class: 'cart-modal__item-price', textContent: item.price + (item.count > 1 ? ` x${item.count}` : '') }),
-      createElement('button', {
-        class: 'cart-modal__item-remove',
-        html: '&times;',
-        onclick: () => {
-          removeFromCart(item.name);
-        }
-      })
-    ]);
-    cartList.appendChild(li);
-  });
-
-  cartTotal.textContent = total;
+function handleAddToCart(product) {
+  addToCart(cart, product, renderCart, saveCartToLocalStorage, showNotification, handleRemoveFromCart);
 }
 
-
-// Add item to the cart
-function addToCart(product) {
-  const existing = cart.find(item => item.name === product.name);
-  if (existing) {
-    existing.count += 1;
-  } else {
-    cart.push({ ...product, count: 1 });
-  }
-  renderCart();
-  saveCartToLocalStorage();
-  showNotification(`Товар "${product.name}" добавлен в корзину!`);
+function handleRemoveFromCart(name) {
+  cart = removeFromCart(cart, name, renderCart, saveCartToLocalStorage, handleRemoveFromCart);
 }
 
-// Remove item from the cart
-function removeFromCart(name) {
-  cart = cart.filter(item => item.name !== name);
-  renderCart();
-  saveCartToLocalStorage();
-}
-
-// 
 function addCartHandlers() {
   document.querySelectorAll('.add-to-cart').forEach((btn, idx) => {
     btn.addEventListener('click', () => {
       const name = btn.closest('.product-card').querySelector('.product-name').textContent;
       const product = loadedProducts.find(p => p.name === name);
-      if (product) addToCart(product);
+      if (product) handleAddToCart(product);
     });
   });
 }
+
+const cartClearBtn = cartModal.querySelector('.cart-modal__clear');
+cartClearBtn.addEventListener('click', () => {
+  cart = [];
+  renderCart(cart, handleRemoveFromCart);
+  saveCartToLocalStorage();
+});
 
 // AFTER renderProducts:
 renderProducts(loadedProducts, productsContainer);
 addQuickViewHandlers();
 addCartHandlers();
 
-// AFTER SEARCH:
-searchInput.addEventListener('input', function () {
-  const query = this.value.trim().toLowerCase();
-  const filtered = loadedProducts.filter(product =>
-    product.name.toLowerCase().includes(query)
-  );
-  renderProducts(filtered, productsContainer);
-  addQuickViewHandlers();
-  addCartHandlers();
-});
-
-
-const cartClearBtn = cartModal.querySelector('.cart-modal__clear');
-cartClearBtn.addEventListener('click', () => {
-  cart = [];
-  renderCart();
-  saveCartToLocalStorage();
-});
-
-// ----------
-
-// Show notification
-
-function showNotification(message) {
-  const oldNotification = document.querySelector('.notification');
-  if (oldNotification) oldNotification.remove();
-
-  const notification = createElement('div', { class: 'notification', textContent: message });
-  document.body.appendChild(notification);
-
-  setTimeout(() => notification.classList.add('show'), 10);
-
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => notification.remove(), 300);
-  }, 2000);
-}
-
+// init Search
+initSearch(
+  searchInput,
+  getLoadedProducts,
+  productsContainer,
+  renderProducts,
+  addQuickViewHandlers,
+  addCartHandlers
+);
 // ----------
 
 document.addEventListener('DOMContentLoaded', () => {
-  initSlider();  
+  initSlider();
   initProducts();
 });
