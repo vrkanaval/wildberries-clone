@@ -3,17 +3,7 @@ import { initSlider} from './slider.js';
 
 
 const root = document.getElementById('root');
-
 const API_URL = 'https://692335b009df4a492324af4f.mockapi.io/api/v1/products';
-
-
-// const PRODUCTS_DATA = [
-//   { name: 'Штаны', price: '150 р.', discount: '-10%', img: './src/assets/item-1.jpg' }, 
-//   { name: 'Куртка', price: '220 р.', discount: '-15%', img: './src/assets/item-1.jpg' },
-//   { name: 'Футболка', price: '87 р.', discount: '-5%', img: './src/assets/item-1.jpg' },
-//   { name: 'Платье', price: '143 р.', discount: '-20%', img: './src/assets/item-1.jpg' },
-//   { name: 'Кроссовки', price: '189 р.', discount: '-12%', img: './src/assets/item-1.jpg' }
-// ];
 
 // --------
 // Local storage 
@@ -40,10 +30,21 @@ async function fetchProducts() {
 let loadedProducts = [];
 
 async function initProducts() {
+   showLoader(productsContainer);
+   
   loadedProducts = await fetchProducts();
+  if (!loadedProducts.length) return; 
+
   renderProducts(loadedProducts, productsContainer);
   addQuickViewHandlers();
   addCartHandlers();
+}
+
+// Loader
+function showLoader(container) {
+  container.innerHTML = '';
+  const loader = createElement('div', { class: 'loader', textContent: 'Загрузка...' });
+  container.appendChild(loader);
 }
 
 // --------
@@ -358,7 +359,7 @@ addCartHandlers();
 // AFTER SEARCH:
 searchInput.addEventListener('input', function () {
   const query = this.value.trim().toLowerCase();
-  const filtered = PRODUCTS_DATA.filter(product =>
+  const filtered = loadedProducts.filter(product =>
     product.name.toLowerCase().includes(query)
   );
   renderProducts(filtered, productsContainer);
@@ -392,12 +393,6 @@ function showNotification(message) {
     setTimeout(() => notification.remove(), 300);
   }, 2000);
 }
-
-
-
-
-
-
 
 // ----------
 
