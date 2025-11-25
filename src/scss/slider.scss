@@ -9,23 +9,34 @@
   .swiper-container {
     position: relative;
     width: 100%;
-    height: 420px;  
+    height: 420px;
+
+    @media (max-width: 900px) {
+      height: 220px;
+    }
+
+    @media (max-width: 600px) {
+      height: 140px;
+    }
 
     .swiper-slide {
       @include flex-center;
       background: $bg-light;
+
       img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
       }
     }
 
     .swiper-pagination {
       bottom: 10px;
+
       .swiper-pagination-bullet {
         background: #fff;
         opacity: 0.7;
+
         &-active {
           background: $primary-pink;
           opacity: 1;
@@ -36,16 +47,10 @@
     .swiper-button-prev,
     .swiper-button-next {
       color: $primary-pink;
+
       &:after {
         font-size: 24px;
       }
     }
-  }
-}
-
-// Adaptive
-@media (max-width: 1024px) {
-  .slider .swiper-container {
-    height: 200px;
   }
 }

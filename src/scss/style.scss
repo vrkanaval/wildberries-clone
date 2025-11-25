@@ -19,6 +19,14 @@
 button {
   cursor: pointer;
   border: 0;
+
+  font-size: 1rem;
+
+  @media (max-width: 600px) {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
 }
 
 a {
@@ -32,9 +40,11 @@ a {
 
   @media screen and (max-width: 1024px) {
     max-width: 1024px;
+    padding: 0 10px;
   }
 
   @media screen and (max-width: 580px) {
     max-width: 580px;
+    padding: 0 5px;
   }
 }

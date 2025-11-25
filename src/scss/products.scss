@@ -11,6 +11,16 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 20px;
+
+        @media (max-width: 900px) {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 800px) {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
     }
 }
 
@@ -23,6 +33,18 @@
     transition: transform 0.3s, box-shadow 0.3s;
 
     position: relative;
+
+    @media (max-width: 900px) {
+        max-width: 100%;
+    }
+
+    @media (max-width: 600px) {
+        max-width: 100%;
+
+        .product-image img {
+            height: 220px;
+        }
+    }
 
     &:hover {
         transform: translateY(-8px);
@@ -69,14 +91,14 @@
         color: $white;
         padding: 4px 8px;
         border-radius: 4px;
-        font-weight: bold;
+        font-weight: 600;
         font-size: 14px;
     }
 
     .product-price {
         padding: 0 15px;
         font-size: 20px;
-        font-weight: bold;
+        font-weight: 600;
         color: $text-dark;
         margin: 10px 0;
     }
@@ -84,7 +106,7 @@
     .product-name {
         padding: 0 15px;
         font-size: 14px;
-        color: #777;
+        color: $footer-text;
         margin-bottom: 15px;
     }
 
@@ -92,7 +114,7 @@
         @include button-base;
         width: 100%;
         background-color: $primary-pink;
-        color: #fff;
+        color: $white;
 
         &:hover {
             background-color: color.adjust($primary-pink, $lightness: -10%);
@@ -101,17 +123,17 @@
 }
 
 .loader {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #e20d87;
-  padding: 40px 0;
-  font-weight: 600;
+    text-align: center;
+    font-size: 1.2rem;
+    color: $primary-pink;
+    padding: 40px 0;
+    font-weight: 600;
 }
 
 .no-products {
-  text-align: center;
-  color: #333333;
-  font-size: 1.2rem;
-  padding: 40px 0;
-  font-weight: 600;
+    text-align: center;
+    color: $text-dark;
+    font-size: 1.2rem;
+    padding: 40px 0;
+    font-weight: 600;
 }

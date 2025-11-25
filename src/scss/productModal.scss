@@ -1,18 +1,21 @@
 .image-modal {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 9999;
 
   &__content {
     position: relative;
-    background: #fff;
+    background: $white;
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 
     max-width: 80vw;
     max-height: 80vh;
@@ -20,6 +23,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    @media (max-width: 600px) {
+      max-width: 98vw;
+      padding: 10px;
+    }
+
   }
 
   &__img {
@@ -36,14 +45,17 @@
     background: none;
     border: none;
     font-size: 2rem;
-    color: #E20D87;
+    color: $primary-pink;
     cursor: pointer;
   }
 
   &__overlay {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
     height: 100%;
     background: transparent;
     z-index: 1;
