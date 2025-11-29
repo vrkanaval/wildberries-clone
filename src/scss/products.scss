@@ -144,6 +144,7 @@
 }
 
 .no-products {
+    grid-column: 1 / -1;
     text-align: center;
     color: $text-dark;
     font-size: 1.2rem;
