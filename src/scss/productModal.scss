@@ -31,11 +31,29 @@
 
   }
 
+  &__img-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   &__img {
-    max-width: 60vw;
-    max-height: 60vh;
-    border-radius: 8px;
+    max-width: 70vw;
+    max-height: 70vh;
+ 
+    border-radius: 12px;
     object-fit: contain;
+    box-shadow: 0 2px 12px rgba(44, 104, 186, 0.08);
+    display: block;
+    margin: 0 auto;
+  }
+
+  &__close-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
   }
 
   &__close {

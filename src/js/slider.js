@@ -14,6 +14,7 @@ export function initSlider() {
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
+            addIcons: false,
         },
         slidesPerView: 1,
         spaceBetween: 0,

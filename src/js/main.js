@@ -2,11 +2,12 @@ import '../scss/style.scss';
 import { initSlider } from './slider.js';
 import { fetchProducts } from './api.js';
 import { createElement } from './createElement.js';
-import { saveCartToLocalStorage, loadCartFromLocalStorage, renderCart, addToCart,removeFromCart} from './cart.js';
+import { saveCartToLocalStorage, loadCartFromLocalStorage, renderCart, addToCart, removeFromCart } from './cart.js';
 import { showLoader } from './loader.js';
 import { showNotification } from './notification.js';
 import { createProductCard, renderProducts } from './products.js';
 import { initSearch } from './search.js';
+import { showOrderUnavailablePopup } from './orderPopup.js';
 
 const root = document.getElementById('root');
 
@@ -74,8 +75,12 @@ const SLIDER = createElement('section', { class: 'slider' }, [
       )
     ]),
     createElement('div', { class: 'swiper-pagination' }),
-    createElement('div', { class: 'swiper-button-prev' }),
-    createElement('div', { class: 'swiper-button-next' })
+    createElement('div', { class: 'swiper-button-prev' }, [
+      createElement('svg', { viewBox: '0 0 24 24' }),
+    ]),
+    createElement('div', { class: 'swiper-button-next' }, [
+      createElement('svg', { viewBox: '0 0 24 24' }),
+    ])
   ])
 ]);
 
@@ -83,8 +88,12 @@ const SLIDER = createElement('section', { class: 'slider' }, [
 const IMAGE_MODAL = createElement('div', { class: 'image-modal', style: 'display:none;' }, [
   createElement('div', { class: 'image-modal__overlay' }),
   createElement('div', { class: 'image-modal__content' }, [
-    createElement('button', { class: 'image-modal__close', html: '&times;' }),
-    createElement('img', { class: 'image-modal__img', src: '', alt: 'Увеличенное изображение' })
+    createElement('div', { class: 'image-modal__close-wrapper' }, [
+      createElement('button', { class: 'image-modal__close', html: '&times;' })
+    ]),
+    createElement('div', { class: 'image-modal__img-wrapper' }, [
+      createElement('img', { class: 'image-modal__img', src: '', alt: 'Увеличенное изображение' })
+    ])
   ])
 ]);
 document.body.appendChild(IMAGE_MODAL);
@@ -220,11 +229,19 @@ function addCartHandlers() {
   });
 }
 
+// ORDER CLEAR BUTTON
 const cartClearBtn = cartModal.querySelector('.cart-modal__clear');
 cartClearBtn.addEventListener('click', () => {
   cart = [];
   renderCart(cart, handleRemoveFromCart);
   saveCartToLocalStorage();
+});
+
+// ORDER BUTTON
+const checkoutBtn = cartModal.querySelector('.cart-modal__checkout');
+checkoutBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  showOrderUnavailablePopup();
 });
 
 // INITIALIZATION

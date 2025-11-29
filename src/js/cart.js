@@ -21,11 +21,16 @@ export function loadCartFromLocalStorage() {
 export function renderCart(cart, removeFromCart) {
   const cartList = document.getElementById('cart-list');
   const cartTotal = document.getElementById('cart-total');
+  const checkoutBtn = document.querySelector('.cart-modal__checkout');
   cartList.innerHTML = '';
 
   if (cart.length === 0) {
     cartList.appendChild(createElement('li', { class: 'cart-modal__empty', textContent: 'Корзина пуста' }));
     cartTotal.textContent = '0';
+     if (checkoutBtn) {
+      checkoutBtn.disabled = true;
+      checkoutBtn.classList.add('disabled');
+    }
     return;
   }
 
@@ -49,6 +54,11 @@ export function renderCart(cart, removeFromCart) {
   });
 
   cartTotal.textContent = total;
+
+   if (checkoutBtn) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove('disabled');
+  }
 }
 
 // Add item to the cart
