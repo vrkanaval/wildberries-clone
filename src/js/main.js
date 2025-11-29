@@ -234,7 +234,7 @@ const cartClearBtn = cartModal.querySelector('.cart-modal__clear');
 cartClearBtn.addEventListener('click', () => {
   cart = [];
   renderCart(cart, handleRemoveFromCart);
-  saveCartToLocalStorage();
+  saveCartToLocalStorage(cart);
 });
 
 // ORDER BUTTON
@@ -264,4 +264,11 @@ initSearch(
 document.addEventListener('DOMContentLoaded', () => {
   initSlider();
   initProducts();
+});
+
+window.addEventListener('storage', (event) => {
+  if (event.key === 'cart') {
+    cart = loadCartFromLocalStorage();
+    renderCart(cart, handleRemoveFromCart);
+  }
 });
